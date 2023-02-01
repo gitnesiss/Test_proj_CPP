@@ -86,28 +86,43 @@ public:
 };
 
 class MyClass {
-    int data;  // все поля в классе по умолчанию private
-    int* arr;
+
 public:
+    int* data;  // все поля в классе по умолчанию private
+
     // конструктор
-    MyClass(int value) {
-        data = value;
+    MyClass(int size) {
+        this->size_inner = size;
+        this->data = new int[size];
         
-        arr = new int[value];
-        for (int i = 0; i < value; i++) {
-            arr[i] = i;
+        for (int i = 0; i < size; i++) {
+            data[i] = i;
         }
-        cout << "Объект " << data << " - " ;
-        cout << "Адрес массива " << arr << ". Вызвался конструктор." << endl;
+        cout << "Вызвался конструктор " << this << endl;
+    }
+
+    // Конструктор копирования. Принимаем объект по ссылке
+    MyClass(const MyClass &other) {
+        this->size_inner = other.size_inner;
+
+        this->data = new int[other.size_inner];
+
+        for (int i = 0; i < other.size_inner; i++) {
+            this->data[i] = other.data[i];
+        }
+        cout << "Вызвался конструктор копирования." << this << endl;
     }
 
     // деструктор вызывается в момент выхода из области видимости вызываемого
     // метода
     ~MyClass() {
-        delete[] arr;  // освобождение памяти выделенной под массив
+        delete[] data;  // освобождение памяти выделенной под массив
         cout << "Объект " << data << " - ";
-        cout << "Адрес массива " << arr << ". Вызвался деструктор." << endl;
+        cout << "Адрес массива " << data << ". Вызвался деструктор." << endl;
     }
+
+private:
+    int size_inner;
 };
 
 void foo() {
@@ -120,11 +135,12 @@ int main() {
 
     setlocale(LC_ALL, "ru");
 
-    MyClass a(1);
-    MyClass b(2);
-    MyClass c(5);
+    MyClass a(10);
+    MyClass b(a);
+    // MyClass c(20);
+    // MyClass d(c);
 
-    foo();
+    // foo();
 
     return 0;
 }
